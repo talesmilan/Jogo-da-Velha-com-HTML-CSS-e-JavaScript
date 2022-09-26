@@ -20,7 +20,17 @@ body {
     cursor: pointer;
     color: #ffffff;
     font-size: 80px;
+    padding-top: 30px;
+     
     
+}
+
+td {
+    width: 150px;
+    height: 150px;
+
+
+
 }
 
 .btn:hover {
