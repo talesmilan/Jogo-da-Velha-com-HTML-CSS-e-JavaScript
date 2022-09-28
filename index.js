@@ -1,19 +1,18 @@
 
-
+// Declaração de variáveis
 let tabuleiro = ["", "", "", "", "", "", "", "", ""]
 let vezJogador1 = false
 let jogadas = 0
 let botoes = []
 let acabou = false
-let retorno = 0
-
 let texto = document.querySelector(`.texto`)
 
 for (let i = 0; i < 9; i++) {
     botoes[i] = document.querySelector(`.btn${i}`)
 }
-
+// Sorteia o primeiro jogador
 const sortear = Math.floor(Math.random() * 2);
+// Faz a primeira jogada do computador
 if (sortear === 0) {
     texto.style.color = 'yellow'
     texto.innerText = 'Espere sua vez...'
@@ -27,11 +26,10 @@ if (sortear === 0) {
 } else {
     vezJogador1 = true
 }
-
-
+// Captura o clique
 document.addEventListener('click', e => {
     let elemento = e.target
-
+    // Faz a jogada do usuário
     for (let i in botoes) {
         if (elemento.classList.contains(`btn${i}`)) {
             if (tabuleiro[i] === "" && vezJogador1 && !acabou) {
@@ -42,25 +40,23 @@ document.addEventListener('click', e => {
                 jogadas++
                 texto.style.color = 'yellow'
                 texto.innerText = 'Espere sua vez...'
-                retorno = checarSeAcabou(tabuleiro)
-                finalizar(retorno)
+                acabouJogo()
+                // Faz a jogada do computador
                 setTimeout(function() { 
-                    jogadaPlanejada(tabuleiro)
-                    jogadas++
-                    texto.style.color = 'red'
-                    texto.innerText = 'Sua vez...'
-                    retorno = checarSeAcabou(tabuleiro)
-                    finalizar(retorno)
-                    vezJogador1 = true
+                    if (!acabou && !vezJogador1) {
+                        jogadaPlanejada(tabuleiro)
+                        jogadas++
+                        texto.style.color = 'red'
+                        texto.innerText = 'Sua vez...'
+                        acabouJogo()
+                        vezJogador1 = true
+                    }
                 }, 2000);
-
             }
-    
         }
     }
-
 })
-
+// Função que pinta o fundo dos botões
 function pintarBotoes(botao1, botao2, botao3, cor) {
     botoes[botao1].style.backgroundColor = cor
     botoes[botao2].style.backgroundColor = cor
@@ -69,22 +65,24 @@ function pintarBotoes(botao1, botao2, botao3, cor) {
     botoes[botao2].style.color = cor === 'red' ? 'white' : 'black'
     botoes[botao3].style.color = cor === 'red' ? 'white' : 'black'
 }
-
-
-function finalizar(retorno) {
+// Função que exibe mensagem final
+function acabouJogo() {
+    let retorno = checarSeAcabou(tabuleiro)
     if (retorno === 1) {
         texto.style.color = 'red'
         texto.innerText = 'Você venceu!'
+        acabou = true
     } else if (retorno == 2) {
         texto.style.color = 'yellow'
         texto.innerText = 'Você perdeu!'
+        acabou = true
     } else if (retorno === 3) {
         texto.style.color = 'white'
         texto.innerText = 'Deu velha!'
+        acabou = true
     }
 }
-
-
+// Função que checa se acabou
 function checarSeAcabou(tabuleiro) {
     let c = 0
     for (let i = 0; i < 7; i += 3) {
@@ -122,12 +120,8 @@ function checarSeAcabou(tabuleiro) {
     }
     return 0
 }
-
-
-
 // Faz uma jogada aleatória no tabuleiro
 function jogadaAleatoria(tabuleiro) {
-
     let jogadasDisponiveis = []
     for (let i in tabuleiro) {
         if (tabuleiro[i].length === 0) {
@@ -135,13 +129,11 @@ function jogadaAleatoria(tabuleiro) {
         }
     }
     embaralharArray(jogadasDisponiveis)
-
     botoes[jogadasDisponiveis[0]].innerText += "O"
     tabuleiro[jogadasDisponiveis[0]] = "O"
     botoes[jogadasDisponiveis[0]].style.color = 'yellow'
 
 }
-
 // Função para embaralhar um array
 function embaralharArray(array) {
     // Loop em todos os elementos
@@ -154,22 +146,8 @@ function embaralharArray(array) {
 // Retornando array com aleatoriedade
 return array;
 }
-
-function contaJogadas(tabuleiro) {
-    let conta = 0
-    for (let i = 0; i < 9; i++) {
-        if (tabuleiro[i] !== "") {
-            conta++
-        }
-    return conta
-    }
-}
-
-
-
-
+// Função que faz uma jogada pplanejada
 function jogadaPlanejada() {
-
     if (jogadas === 0) {
         tabuleiro[0] = "O";
         botoes[0].innerText += "O"
