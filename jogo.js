@@ -1,9 +1,11 @@
 
 
 let tabuleiro = ["", "", "", "", "", "", "", "", ""]
-let vezJogador1 = true
+let vezJogador1 = false
 let jogadas = 0
 let botoes = []
+let acabou = false
+let retorno = 0
 
 let texto = document.querySelector(`.texto`)
 
@@ -11,6 +13,20 @@ for (let i = 0; i < 9; i++) {
     botoes[i] = document.querySelector(`.btn${i}`)
 }
 
+const sortear = Math.floor(Math.random() * 2);
+if (sortear === 0) {
+    texto.style.color = 'yellow'
+    texto.innerText = 'Espere sua vez...'
+    setTimeout(function() { 
+        jogadaPlanejada(tabuleiro)
+        jogadas++
+        texto.style.color = 'red'
+        texto.innerText = 'Sua vez...'
+        vezJogador1=true
+    }, 2000);
+} else {
+    vezJogador1 = true
+}
 
 
 document.addEventListener('click', e => {
@@ -18,20 +34,24 @@ document.addEventListener('click', e => {
 
     for (let i in botoes) {
         if (elemento.classList.contains(`btn${i}`)) {
-            if (tabuleiro[i] === "" && vezJogador1) {
+            if (tabuleiro[i] === "" && vezJogador1 && !acabou) {
+                vezJogador1 = false
                 botoes[i].style.color = 'red'
                 botoes[i].innerText += "X"
                 tabuleiro[i] = "X"
                 jogadas++
                 texto.style.color = 'yellow'
                 texto.innerText = 'Espere sua vez...'
-                checarSeAcabou(tabuleiro)
+                retorno = checarSeAcabou(tabuleiro)
+                finalizar(retorno)
                 setTimeout(function() { 
                     jogadaPlanejada(tabuleiro)
                     jogadas++
                     texto.style.color = 'red'
                     texto.innerText = 'Sua vez...'
-                    checarSeAcabou(tabuleiro)
+                    retorno = checarSeAcabou(tabuleiro)
+                    finalizar(retorno)
+                    vezJogador1 = true
                 }, 2000);
 
             }
@@ -42,13 +62,26 @@ document.addEventListener('click', e => {
 })
 
 function pintarBotoes(botao1, botao2, botao3, cor) {
-    console.log('ativou')
     botoes[botao1].style.backgroundColor = cor
     botoes[botao2].style.backgroundColor = cor
     botoes[botao3].style.backgroundColor = cor
     botoes[botao1].style.color = cor === 'red' ? 'white' : 'black'
     botoes[botao2].style.color = cor === 'red' ? 'white' : 'black'
     botoes[botao3].style.color = cor === 'red' ? 'white' : 'black'
+}
+
+
+function finalizar(retorno) {
+    if (retorno === 1) {
+        texto.style.color = 'red'
+        texto.innerText = 'Você venceu!'
+    } else if (retorno == 2) {
+        texto.style.color = 'yellow'
+        texto.innerText = 'Você perdeu!'
+    } else if (retorno === 3) {
+        texto.style.color = 'white'
+        texto.innerText = 'Deu velha!'
+    }
 }
 
 
@@ -59,13 +92,13 @@ function checarSeAcabou(tabuleiro) {
             pintarBotoes(i, i+1, i+2, 'red')
             return 1
         } else if (tabuleiro[i] === "O" && tabuleiro[i+1] === "O" && tabuleiro[i+2] === "O") {
-            pintarBotoes(i, i+1, i+2, 'rgba(255,255,0,0.7)')
+            pintarBotoes(i, i+1, i+2, 'yellow')
             return 2
         } else if (tabuleiro[c] === "X" && tabuleiro[c+3] === "X" && tabuleiro[c+6] === "X") {
             pintarBotoes(c, c+3, c+6, 'red')
             return 1
         } else if (tabuleiro[c] === "O" && tabuleiro[c+3] === "O" && tabuleiro[c+6] === "O") {
-            pintarBotoes(c, c+3, c+6, 'rgba(255,255,0,0.7)')
+            pintarBotoes(c, c+3, c+6, 'yellow')
             return 2
         }
         c++
@@ -74,17 +107,17 @@ function checarSeAcabou(tabuleiro) {
         pintarBotoes(0, 4, 8, 'red')
         return 1
     } else if (tabuleiro[0] === "O" && tabuleiro[4] == "O" && tabuleiro[8] === "O") {
-        pintarBotoes(0, 4, 8, 'rgba(255,255,0,0.7)')
+        pintarBotoes(0, 4, 8, 'yellow')
         return 2
     } else if (tabuleiro[2] === "X" && tabuleiro[4] == "X" && tabuleiro[6] === "X") {
         pintarBotoes(2, 4, 6, 'red')
         return 1
     } else if (tabuleiro[2] === "O" && tabuleiro[4] == "O" && tabuleiro[6] === "O") {
-        pintarBotoes(2, 4, 6, 'rgba(255,255,0,0.7)')
+        pintarBotoes(2, 4, 6, 'yellow')
         return 2
     }
 
-    if (jogadas === 8) {
+    if (jogadas === 9) {
         return 3
     }
     return 0
@@ -105,7 +138,7 @@ function jogadaAleatoria(tabuleiro) {
 
     botoes[jogadasDisponiveis[0]].innerText += "O"
     tabuleiro[jogadasDisponiveis[0]] = "O"
-    botoes[jogadasDisponiveis].style.color = 'yellow'
+    botoes[jogadasDisponiveis[0]].style.color = 'yellow'
 
 }
 
@@ -137,8 +170,6 @@ function contaJogadas(tabuleiro) {
 
 function jogadaPlanejada() {
 
-    console.log(tabuleiro)
-    console.log(jogadas)
     if (jogadas === 0) {
         tabuleiro[0] = "O";
         botoes[0].innerText += "O"
