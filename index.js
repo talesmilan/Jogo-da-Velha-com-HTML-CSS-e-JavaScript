@@ -1,11 +1,14 @@
 
 // Declaração de variáveis
-let tabuleiro = ["", "", "", "", "", "", "", "", ""]
+const tabuleiro = ["", "", "", "", "", "", "", "", ""]
 let vezJogador1 = false
 let jogadas = 0
 let botoes = []
 let acabou = false
 let texto = document.querySelector(`.texto`)
+
+// Cria uma div
+let finaliza = document.createElement('div');
 
 for (let i = 0; i < 9; i++) {
     botoes[i] = document.querySelector(`.btn${i}`)
@@ -55,6 +58,12 @@ document.addEventListener('click', e => {
             }
         }
     }
+    // Programa o botaõ reiniciar
+    if (elemento.classList.contains(`reiniciar`)) {
+        for (let i in tabuleiro) {
+            tabuleiro[i] = ""
+        }
+    }
 })
 // Função que pinta o fundo dos botões
 function pintarBotoes(botao1, botao2, botao3, cor) {
@@ -81,6 +90,15 @@ function acabouJogo() {
         texto.innerText = 'Deu velha!'
         acabou = true
     }
+    if (retorno > 0) {
+        setTimeout(() => {
+            // Cria uma div para mostrar a pontuação final
+            finaliza.innerHTML = `<div class='tela'><div class='finalizar'><p>${texto.innerText}</p>`
+                    +"<button class='reiniciar'>Reiniciar</button></div></div>"
+            document.body.appendChild(finaliza)
+        }, 1500)
+    }
+
 }
 // Função que checa se acabou
 function checarSeAcabou(tabuleiro) {
