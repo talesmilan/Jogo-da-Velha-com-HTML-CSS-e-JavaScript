@@ -13,22 +13,26 @@ let finaliza = document.createElement('div');
 for (let i = 0; i < 9; i++) {
     botoes[i] = document.querySelector(`.btn${i}`)
 }
-// Sorteia o primeiro jogador
-const sortear = Math.floor(Math.random() * 2);
-// Faz a primeira jogada do computador
-if (sortear === 0) {
-    texto.style.color = 'yellow'
-    texto.innerText = 'Espere sua vez...'
-    setTimeout(function() { 
-        jogadaPlanejada(tabuleiro)
-        jogadas++
-        texto.style.color = 'red'
-        texto.innerText = 'Sua vez...'
-        vezJogador1=true
-    }, 2000);
-} else {
-    vezJogador1 = true
+// Função que faz a primeira jogada
+function primeiraJogada() {
+    // Sorteia o primeiro jogador
+    const sortear = Math.floor(Math.random() * 2);
+    // Faz a primeira jogada do computador
+    if (sortear === 0) {
+        texto.style.color = 'yellow'
+        texto.innerText = 'Espere sua vez...'
+        setTimeout(function() { 
+            jogadaPlanejada(tabuleiro)
+            jogadas++
+            texto.style.color = 'red'
+            texto.innerText = 'Sua vez...'
+            vezJogador1=true
+        }, 2000);
+    } else {
+        vezJogador1 = true
+    }
 }
+primeiraJogada()
 // Captura o clique
 document.addEventListener('click', e => {
     let elemento = e.target
@@ -60,9 +64,16 @@ document.addEventListener('click', e => {
     }
     // Programa o botaõ reiniciar
     if (elemento.classList.contains(`reiniciar`)) {
+        vezJogador1 = false
+        jogadas = 0
+        acabou = false
         for (let i in tabuleiro) {
             tabuleiro[i] = ""
+            botoes[i].innerText = ""
+            botoes[i].style.backgroundColor = 'rgb(173, 173, 173)'
         }
+        finaliza.innerHTML = ""
+        primeiraJogada()
     }
 })
 // Função que pinta o fundo dos botões
